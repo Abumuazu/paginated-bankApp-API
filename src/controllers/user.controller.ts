@@ -37,24 +37,35 @@ export async function Register(req: Request, res: Response): Promise<void> {
       abortEarly: false,
     });
     if (validationResult.error) {
-      res.status(404).json({
-        message: 'there has been a validation error',
+      if (validationResult.error.isJoi) {
+        let er: any = res.status(422).send({
+          message: validationResult.error.details[0].message,
+        });
+        return er;
+      }
+    }
+
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (user) {
+      res.status(404).send({
+        message: ' Registration denied , account already exist exist',
+      });
+    } else {
+      const newUser = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+      });
+      //retrieve Token
+      const token = accessToken(newUser._id);
+      res.cookie('jwt', token, { httpOnly: true });
+      res.status(201).json({
+        message: 'You have succesfully Register, Welcome to Abu bank-App-API',
       });
       return;
     }
-
-    const newUser = await User.create({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-    });
-    //retrieve Token
-    const token = accessToken(newUser._id);
-    res.cookie('jwt', token, { httpOnly: true });
-    res.status(201).json({
-      message: 'You have succesfully Register, Welcome to Abu bank-App-API',
-    });
-    return;
   } catch (err: any) {
     res.status(400).json({
       message: err.message,
@@ -80,12 +91,17 @@ export async function signin(req: Request, res: Response): Promise<void> {
       abortEarly: false,
     });
     if (validationResult.error) {
-      res.status(404).json({
-        message: 'error validating your entries ',
-      });
-      return;
+      if (validationResult.error.isJoi) {
+        let er: any = res.status(422).send({
+          message: validationResult.error.details[0].message,
+        });
+        return er;
+      }
     }
-    const user = await User.findOne({ email }).select('+password');
+
+    const user = await User.findOne({ email: req.body.email }).select(
+      '+password',
+    );
     const validUser = await bcrypt.compare(req.body.password, user.password);
     if (validUser) {
       // retrieve access token
@@ -104,6 +120,7 @@ export async function signin(req: Request, res: Response): Promise<void> {
         message: 'Invalid email or Password , Kindly check your details',
       });
     }
+    console.log('Token', validUser);
   } catch (err: any) {
     res.status(404).json({
       message: 'User Not Registered ',

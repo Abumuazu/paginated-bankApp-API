@@ -9,7 +9,7 @@ dotenv.config();
 
 import homeRoute from './routes/index';
 import usersRoute from './routes/users.route';
-import transactionRoute from './routes';
+import transactionRoute from './routes/accTransaction.route';
 import accBalanceRoute from './routes/accBalance.route';
 
 const app = express();

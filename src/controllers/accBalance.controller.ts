@@ -1,6 +1,6 @@
-import Account from '../models/accBalance.model';
 import { Request, Response } from 'express';
 import joi from 'joi';
+import Account from '../models/accBalance.model';
 
 // TO CREATE AN ACCOUNT
 export async function createAccount(
@@ -16,25 +16,36 @@ export async function createAccount(
       abortEarly: false,
     });
     if (validationResult.error) {
-      res.status(404).json({
-        message: 'something is not right upon validation ',
+      if (validationResult.error.isJoi) {
+        let er: any = res.status(422).send({
+          message: validationResult.error.details[0].message,
+        });
+        return er;
+      }
+    }
+
+    const { accountNumber } = req.body;
+    const user = await Account.findOne({ accountNumber });
+    if (user) {
+      res.status(404).send({
+        message: ' account number already exist exist',
+      });
+    } else {
+      const newBalance = await Account.create({
+        accountNumber: req.body.accountNumber,
+        amount: req.body.amount,
+      });
+
+      //redirect
+      res.status(201).json({
+        status: 'success',
+        data: {
+          newBalance,
+          message: 'congratulations , account created successfully',
+        },
       });
       return;
     }
-    const newBalance = await Account.create({
-      accountNumber: req.body.accountNumber,
-      amount: req.body.amount,
-    });
-
-    //redirect
-    res.status(201).json({
-      status: 'success',
-      data: {
-        newBalance,
-        message: 'congratulations , account created successfully',
-      },
-    });
-    return;
   } catch (err: any) {
     res.status(400).json({
       message: err.message,
@@ -54,8 +65,8 @@ export async function retrieveIndividualBalance(
   req: Request,
   res: Response,
 ): Promise<void> {
-  const balance = req.params.accountNumber;
-  const data = await Account.find({ accountNumber: balance });
+  const { accountNumber } = req.params;
+  const data = await Account.findOne({ accountNumber: accountNumber });
   if (data) {
     res.status(200).json({
       status: 'success',

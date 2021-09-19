@@ -57,7 +57,7 @@ describe('Test for all registered Users endpoint', () => {
     const userInfo = {
       name: 'abu',
       email: 'abumzee@gmail.com',
-      password: '1234567898',
+      password: '1234567',
       repeat_password: '1234567',
     };
     await request(app)
@@ -110,11 +110,10 @@ describe('Test for all registered Users endpoint', () => {
       .send(userInfo)
       .expect(404)
       .expect((res: any) => {
-        expect(res.body.message).toBe(
-          'Invalid email or Password , Kindly check your details',
-        );
+        expect(res.body.message).toBe('User Not Registered');
       });
   });
+
   //6
   it('Successfully logs in a registered user', async () => {
     const userInfo = {
@@ -136,7 +135,7 @@ describe('Test for all registered Users endpoint', () => {
   it('Throw error for an unsuccessful log in of a registered user', async () => {
     const userInfo = {
       email: 'abumzee@gmail.com',
-      password: '1234567d',
+      password: '1234567',
     };
     await request(app)
       .post('/users/login')
@@ -162,117 +161,117 @@ describe('Test for all registered Users endpoint', () => {
   });
 
   ////////////////////// Test cases for all balances route ///////////////////////////////
-  //   it('Throw error for an unsuccessful validation of account inputs', async () => {
-  //     const userInfo = {
-  //       accountNumber: '',
-  //       amount: '',
-  //     };
-  //     await request(app)
-  //       .post('/account/create')
-  //       .send(userInfo)
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(404)
-  //       .expect((res: any) => {
-  //         expect(res.body.message).toBe('validation Error');
-  //       });
-  //   });
+  it('Throw error for an unsuccessful validation of account inputs', async () => {
+    const userInfo = {
+      accountNumber: '',
+      amount: '',
+    };
+    await request(app)
+      .post('/account/create')
+      .send(userInfo)
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(404)
+      .expect((res: any) => {
+        expect(res.body.message).toBe('validation Error');
+      });
+  });
 
-  // it("Throws an error if users account information is not found", async() => {
-  //   await request(app)
-  //   .get("/account/balance")
-  //   .set("Accept", "application/json")
-  //   .set("Cookie",`jwt=${token}`)
-  //   .expect(404)
-  //   .expect((res: any) => {
-  //    expect(res.body.result).toHaveLength(0)
-  //   })
-  // })
+  it('Throws an error if users account information is not found', async () => {
+    await request(app)
+      .get('/account/balance')
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(404)
+      .expect((res: any) => {
+        expect(res.body.result).toHaveLength(0);
+      });
+  });
 
-  //   it('Test for Successful creation of account', async () => {
-  //     const userInfo = {
-  //       accountNumber: '1234567890',
-  //       amount: '70000',
-  //     };
-  //     await request(app)
-  //       .post('/account/create')
-  //       .send(userInfo)
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(201)
-  //       .expect((res: any) => {
-  //         expect(res.body.data.message).toBe(
-  //           'You have successfully created an account!',
-  //         );
-  //       });
-  //   });
-  //   it('Get all registered user account information', async () => {
-  //     await request(app)
-  //       .get('/account/balance')
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(200)
-  //       .expect((res: any) => {
-  //         expect(res.body).not.toBeNull();
-  //         expect(res.body.result).not.toHaveLength(0);
-  //       });
-  //   });
-  //   it("Successfully get single user's balance in the dataBase", async () => {
-  //     await request(app)
-  //       .get('/account/balance/1234567890')
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(200)
-  //       .expect((res: any) => {
-  //         expect(res.body.data.data).not.toBeNull();
-  //       });
-  //   });
+  it('Test for Successful creation of account', async () => {
+    const userInfo = {
+      accountNumber: '1234567890',
+      amount: '70000',
+    };
+    await request(app)
+      .post('/account/create')
+      .send(userInfo)
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(201)
+      .expect((res: any) => {
+        expect(res.body.data.message).toBe(
+          'You have successfully created an account!',
+        );
+      });
+  });
+  it('Get all registered user account information', async () => {
+    await request(app)
+      .get('/account/balance')
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(200)
+      .expect((res: any) => {
+        expect(res.body).not.toBeNull();
+        expect(res.body.result).not.toHaveLength(0);
+      });
+  });
+  it("Successfully get single user's balance in the dataBase", async () => {
+    await request(app)
+      .get('/account/balance/1234567890')
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(200)
+      .expect((res: any) => {
+        expect(res.body.data.data).not.toBeNull();
+      });
+  });
 
-  //   /// Test for Transactions
-  //   it('Throw error for an unsuccessful creation of transaction', async () => {
-  //     const userInfo = {
-  //       from: '1234567890',
-  //       to: '0987654321',
-  //       transferDescription: '',
-  //       amount: '',
-  //     };
-  //     await request(app)
-  //       .post('/transaction/transfer')
-  //       .send(userInfo)
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(404)
-  //       .expect((res: any) => {
-  //         expect(res.body.message).toBe('validation Error');
-  //       });
-  //   });
-  //   it('Successfully creation of transaction', async () => {
-  //     const userInfo = {
-  //       from: '1234567890',
-  //       to: '1278946355',
-  //       transferDescription: 'transfer from babalola',
-  //       amount: '2000',
-  //     };
-  //     await request(app)
-  //       .post('/transaction/transfer')
-  //       .send(userInfo)
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(201)
-  //       .expect((res: any) => {
-  //         expect(res.body.message).toBe('transaction created!');
-  //       });
-  //   });
+  /// Test for Transactions
+  it('Throw error for an unsuccessful creation of transaction', async () => {
+    const userInfo = {
+      from: '1234567890',
+      to: '0987654321',
+      transferDescription: '',
+      amount: '',
+    };
+    await request(app)
+      .post('/transaction/transfer')
+      .send(userInfo)
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(404)
+      .expect((res: any) => {
+        expect(res.body.message).toBe('validation Error');
+      });
+  });
+  it('Successfully creation of transaction', async () => {
+    const userInfo = {
+      from: '1234567890',
+      to: '1278946355',
+      transferDescription: 'transfer from babalola',
+      amount: '2000',
+    };
+    await request(app)
+      .post('/transaction/transfer')
+      .send(userInfo)
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(201)
+      .expect((res: any) => {
+        expect(res.body.message).toBe('transaction created!');
+      });
+  });
 
-  //   test('it should get all  transactions in database', async () => {
-  //     await request(app)
-  //       .get('/transaction')
-  //       .set('Accept', 'application/json')
-  //       .set('Cookie', `jwt=${token}`)
-  //       .expect(200)
-  //       .expect((res: any) => {
-  //         expect(res.body).not.toBeNull();
-  //         expect(res.body.result).not.toHaveLength(0);
-  //       });
-  //   });
+  test('it should get all  transactions in database', async () => {
+    await request(app)
+      .get('/transaction')
+      .set('Accept', 'application/json')
+      .set('Cookie', `jwt=${token}`)
+      .expect(200)
+      .expect((res: any) => {
+        expect(res.body).not.toBeNull();
+        expect(res.body.result).not.toHaveLength(0);
+      });
+  });
 });

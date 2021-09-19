@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema<ScType>({
     required: [true, 'Email is required'],
     lowercase: true,
     validate: [validator.isEmail, 'please provide a valid email'],
+    unique: true,
   },
 
   password: {

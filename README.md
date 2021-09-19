@@ -1,15 +1,14 @@
 # 1. NO_SQL
 
-### Implement this task using MongoDB
+### A bankApp API using NodeJs, ExpressJs and MongoDB
 
-### Clarification
-- Convert your week-7-task database into a NOSQL DB using `MONGODB`. 
-- Return the same information as specified from previous task.
-- Implement pagination for both transaction and balance table, `with limit of 5 values for each page`
-- Create Authentication and Authorization for users using a middleware function
-- Implement Validation for incoming request using  **Joi**
+### bonus (stretch goal)
+- Implemented pagination for both transaction and balance table, `with limit of 5 values for each page`
+- Created and Authentication and Authorization for users using a middleware function
+- Implemented Validation for incoming request using  **Joi**
 - Only registered users can access all `endpoints`
-- Use mongoDB-compass for local development
+- Used mongoDB-compass for local development
+- also implemented some  Mongo Aggregation Exercise for a restaurant database
 
 - Balance data format:
 ```js
@@ -47,10 +46,10 @@
 
 ```
 
-### Test Coverage (Test is mandatory):
-- Test your database using mongodb-memory-server
-- Test all endpoints `(GET, POST, PUT, DELETE)`
+### Test Coverage:
+- Tested database using mongodb-memory-server
+- Tested all endpoints `(GET, POST, PUT, DELETE)`
 
 
-# 2. Mongo Aggregation Exercise.
-- Go through the readme file in the Folder `MongoAggregation`
+
+
